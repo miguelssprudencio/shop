@@ -414,6 +414,12 @@ window.addEventListener('scroll', () => {
     parallaxElements.forEach(element => {
         element.style.transform = `translateY(${scrolled * 0.5}px)`;
     });
+
+    // Aurora parallax effect
+    const aurora = document.querySelector('.aurora-background');
+    if (aurora) {
+        aurora.style.transform = `translateY(${scrolled * 0.1}px)`;
+    }
 });
 
 // ==================== ANIMAÇÃO DE ENTRADA NA PÁGINA ====================
