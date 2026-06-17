@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Inovação ao seu Alcance</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>Tech<span>Store</span></h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#produtos">Produtos</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <button class="theme-toggle" id="theme-toggle" title="Alternar modo escuro/claro">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="cart-icon" id="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </div>
+                <div class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <h2>Tecnologia que transforma seu dia a dia.</h2>
+                    <p>Descubra os gadgets mais inovadores e transforme sua rotina com a TechStore.</p>
+                    <a href="#produtos" class="btn-primary">Ver Produtos</a>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Tecnologia">
+                </div>
+            </div>
+        </section>
+
+        <section id="produtos" class="products-section">
+            <div class="container">
+                <h2 class="section-title">Nossos Produtos</h2>
+                
+                <div class="filters-container">
+                    <button class="filter-btn active" data-filter="todos">Todos</button>
+                    <button class="filter-btn" data-filter="áudio">Áudio</button>
+                    <button class="filter-btn" data-filter="wearables">Wearables</button>
+                    <button class="filter-btn" data-filter="fotografia">Fotografia</button>
+                    <button class="filter-btn" data-filter="periféricos">Periféricos</button>
+                    <button class="filter-btn" data-filter="tablets">Tablets</button>
+                </div>
+
+                <div class="products-grid" id="products-grid">
+                    <!-- Produtos serão inseridos via JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <section id="sobre" class="about-section">
+            <div class="container about-container">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Nossa Equipe">
+                </div>
+                <div class="about-content">
+                    <h2 class="section-title">Sobre a TechStore</h2>
+                    <p>A TechStore nasceu da paixão pela inovação. Nossa missão é trazer o que há de mais moderno e funcional no mundo da tecnologia diretamente para você. Acreditamos que a tecnologia deve ser acessível e melhorar a vida das pessoas.</p>
+                    <p>Com anos de experiência no mercado, selecionamos cuidadosamente cada produto em nosso catálogo, garantindo qualidade, durabilidade e o melhor custo-benefício para nossos clientes.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="contact-section">
+            <div class="container">
+                <h2 class="section-title">Entre em Contato</h2>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p>Av. da Inovação, 1000 - São Paulo, SP</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-phone"></i>
+                            <p>(11) 98765-4321</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <p>contato@techstore.com</p>
+                        </div>
+                    </div>
+                    <form class="contact-form">
+                        <input type="text" placeholder="Seu Nome" required>
+                        <input type="email" placeholder="Seu E-mail" required>
+                        <textarea placeholder="Sua Mensagem" rows="5" required></textarea>
+                        <button type="submit" class="btn-primary">Enviar Mensagem</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-logo">
+                <h3>Tech<span>Store</span></h3>
+                <p>Inovação ao seu alcance, todos os dias.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Links Úteis</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#produtos">Produtos</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Siga-nos</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TechStore. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Carrinho Modal -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Seu Carrinho</h3>
+                <span class="close-cart" id="close-cart">&times;</span>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Itens do carrinho serão inseridos via JavaScript -->
+                <p class="empty-cart-msg">Seu carrinho está vazio.</p>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total-value">R$ 0,00</span>
+                </div>
+                <button class="btn-primary checkout-btn">Finalizar Compra</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
