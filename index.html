@@ -1,171 +1,414 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechStore - Inovação ao seu Alcance</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ÁUREA — Alfaiataria Contemporânea</title>
+  <meta name="description" content="ÁUREA. Peças atemporais, cortadas à mão, produzidas em pequenos lotes numerados. Edição 07 — Inverno 2026.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="aurora-container">
-        <div class="aurora-background aurora-mask"></div>
+
+  <a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+  <!-- ===== Elemento de assinatura: fio de progresso (tema alfaiataria) ===== -->
+  <div class="thread" aria-hidden="true">
+    <span class="thread__label">EDIÇÃO&nbsp;07</span>
+    <div class="thread__track">
+      <div class="thread__fill" id="threadFill"></div>
     </div>
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <h1>Tech<span>Store</span></h1>
-            </div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#produtos">Produtos</a></li>
-                    <li><a href="#sobre">Sobre</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
-            </nav>
-            <div class="header-icons">
-                <button class="theme-toggle" id="theme-toggle" title="Alternar modo escuro/claro">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <div class="cart-icon" id="cart-btn">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span id="cart-count">0</span>
-                </div>
-                <div class="mobile-menu-btn" id="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </div>
-            </div>
+    <span class="thread__pct" id="threadPct">00</span>
+  </div>
+
+  <!-- ===== Cabeçalho / Navbar ===== -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner container">
+      <a href="#top" class="navbar__logo">ÁUREA</a>
+
+      <nav class="navbar__nav" id="navMenu" aria-label="Navegação principal">
+        <ul>
+          <li><a href="#colecao">Coleção</a></li>
+          <li><a href="#produtos">Peças</a></li>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#depoimentos">Depoimentos</a></li>
+          <li><a href="#newsletter" class="navbar__nav-cta">Contato</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar__actions">
+        <button class="navbar__bag" type="button" aria-label="Ver sacola de compras, 0 itens">
+          Sacola <span>(0)</span>
+        </button>
+        <button class="navbar__burger" id="burgerBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Painel de menu mobile ===== -->
+  <div class="mobile-panel" id="mobilePanel">
+    <nav aria-label="Navegação mobile">
+      <ul>
+        <li><a href="#colecao">Coleção</a></li>
+        <li><a href="#produtos">Peças</a></li>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#depoimentos">Depoimentos</a></li>
+        <li><a href="#newsletter">Contato</a></li>
+      </ul>
+    </nav>
+    <p class="mobile-panel__meta">Edição 07 — Inverno 2026<br>Peças numeradas, tiragem de 200 unidades.</p>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <main id="main">
+
+    <!-- ===== Hero ===== -->
+    <section class="hero" id="top">
+      <div class="hero__bg" aria-hidden="true"></div>
+
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <p class="eyebrow reveal">ÁUREA — EDIÇÃO 07</p>
+          <h1 class="hero__title reveal">
+            O silêncio<br>
+            também é uma<br>
+            <span>declaração.</span>
+          </h1>
+          <p class="hero__subtitle reveal">
+            Peças atemporais, cortadas à mão, para quem entende<br class="br-desktop">
+            que menos — quando bem feito — é mais.
+          </p>
+          <a href="#produtos" class="btn btn--gold reveal">
+            <span>Explorar Coleção</span>
+          </a>
         </div>
-    </header>
 
-    <main>
-        <section id="home" class="hero">
-            <div class="container hero-container">
-                <div class="hero-content">
-                    <h2>Tecnologia que transforma seu dia a dia.</h2>
-                    <p>Descubra os gadgets mais inovadores e transforme sua rotina com a TechStore.</p>
-                    <a href="#produtos" class="btn-primary">Ver Produtos</a>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Tecnologia">
-                </div>
-            </div>
-        </section>
-
-        <section id="produtos" class="products-section">
-            <div class="container">
-                <h2 class="section-title">Nossos Produtos</h2>
-                
-                <div class="filters-container">
-                    <button class="filter-btn active" data-filter="todos">Todos</button>
-                    <button class="filter-btn" data-filter="áudio">Áudio</button>
-                    <button class="filter-btn" data-filter="wearables">Wearables</button>
-                    <button class="filter-btn" data-filter="fotografia">Fotografia</button>
-                    <button class="filter-btn" data-filter="periféricos">Periféricos</button>
-                    <button class="filter-btn" data-filter="tablets">Tablets</button>
-                </div>
-
-                <div class="products-grid" id="products-grid">
-                    <!-- Produtos serão inseridos via JavaScript -->
-                </div>
-            </div>
-        </section>
-
-        <section id="sobre" class="about-section">
-            <div class="container about-container">
-                <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Nossa Equipe">
-                </div>
-                <div class="about-content">
-                    <h2 class="section-title">Sobre a TechStore</h2>
-                    <p>A TechStore nasceu da paixão pela inovação. Nossa missão é trazer o que há de mais moderno e funcional no mundo da tecnologia diretamente para você. Acreditamos que a tecnologia deve ser acessível e melhorar a vida das pessoas.</p>
-                    <p>Com anos de experiência no mercado, selecionamos cuidadosamente cada produto em nosso catálogo, garantindo qualidade, durabilidade e o melhor custo-benefício para nossos clientes.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="contato" class="contact-section">
-            <div class="container">
-                <h2 class="section-title">Entre em Contato</h2>
-                <div class="contact-grid">
-                    <div class="contact-info">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <p>Av. da Inovação, 1000 - São Paulo, SP</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-phone"></i>
-                            <p>(11) 98765-4321</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <p>contato@techstore.com</p>
-                        </div>
-                    </div>
-                    <form class="contact-form">
-                        <input type="text" placeholder="Seu Nome" required>
-                        <input type="email" placeholder="Seu E-mail" required>
-                        <textarea placeholder="Sua Mensagem" rows="5" required></textarea>
-                        <button type="submit" class="btn-primary">Enviar Mensagem</button>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container footer-container">
-            <div class="footer-logo">
-                <h3>Tech<span>Store</span></h3>
-                <p>Inovação ao seu alcance, todos os dias.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Links Úteis</h4>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#produtos">Produtos</a></li>
-                    <li><a href="#sobre">Sobre</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
-            </div>
-            <div class="footer-social">
-                <h4>Siga-nos</h4>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
+        <div class="hero__art reveal" aria-hidden="true">
+          <svg class="hero__art-svg" viewBox="0 0 560 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle class="hero__layer hero__layer--back" data-depth="0.02" cx="430" cy="160" r="150" stroke="#C8A165" stroke-opacity="0.18" stroke-width="1"></circle>
+            <g class="hero__layer hero__layer--mid" data-depth="0.05">
+              <path d="M230 120 C 200 150, 175 200, 175 260 C 175 320, 200 360, 200 420 C 200 480, 160 520, 150 600 L 360 600 C 345 520, 305 480, 305 420 C 305 360, 335 320, 335 260 C 335 200, 305 150, 280 120 C 265 108, 245 108, 230 120 Z"
+                stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1.2"></path>
+              <path d="M230 120 C 205 145, 188 168, 178 196" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1.2"></path>
+              <path d="M280 120 C 305 145, 322 168, 332 196" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1.2"></path>
+            </g>
+            <g class="hero__layer hero__layer--front" data-depth="0.09">
+              <line x1="255" y1="150" x2="255" y2="585" stroke="#C8A165" stroke-opacity="0.55" stroke-width="1" stroke-dasharray="2 6"></line>
+              <circle cx="255" cy="138" r="3" fill="#C8A165"></circle>
+              <text x="392" y="610" class="hero__art-text">N.07 / 200</text>
+              <line x1="60" y1="640" x2="500" y2="640" stroke="#A0A0A0" stroke-opacity="0.25" stroke-width="1"></line>
+            </g>
+          </svg>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 TechStore. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+      </div>
 
-    <!-- Carrinho Modal -->
-    <div class="cart-modal" id="cart-modal">
-        <div class="cart-content">
-            <div class="cart-header">
-                <h3>Seu Carrinho</h3>
-                <span class="close-cart" id="close-cart">&times;</span>
-            </div>
-            <div class="cart-items" id="cart-items">
-                <!-- Itens do carrinho serão inseridos via JavaScript -->
-                <p class="empty-cart-msg">Seu carrinho está vazio.</p>
-            </div>
-            <div class="cart-footer">
-                <div class="cart-total">
-                    <span>Total:</span>
-                    <span id="cart-total-value">R$ 0,00</span>
-                </div>
-                <button class="btn-primary checkout-btn">Finalizar Compra</button>
-            </div>
+      <button class="hero__scroll-cue" type="button" aria-label="Rolar para a próxima seção" onclick="document.getElementById('colecao').scrollIntoView({behavior:'smooth'})">
+        <span class="hero__scroll-line" aria-hidden="true"></span>
+        Role
+      </button>
+    </section>
+
+    <!-- ===== Nova Coleção ===== -->
+    <section class="intro" id="colecao">
+      <div class="container intro__inner">
+        <div class="intro__text">
+          <p class="eyebrow reveal">Edição 07 — Inverno 2026</p>
+          <h2 class="reveal">Nova Coleção</h2>
+          <p class="reveal">
+            Construída sobre alfaiataria clássica e reduzida ao essencial, a Edição 07 reúne
+            sobretudos, camisaria e malhas em tons de terra. Cada peça passa por mais de
+            quarenta horas de costura manual, em ateliê próprio, antes de receber seu número
+            de tiragem.
+          </p>
+          <p class="reveal">
+            São 200 unidades por modelo. Quando esgotam, a peça não retorna — apenas a
+            referência permanece registrada no arquivo da casa.
+          </p>
+          <a href="#produtos" class="link-underline reveal">Ver todas as peças da edição</a>
         </div>
+
+        <div class="intro__visual reveal" aria-hidden="true">
+          <svg viewBox="0 0 360 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="340" height="440" stroke="#A0A0A0" stroke-opacity="0.25" stroke-width="1"></rect>
+            <path d="M180 70 C 150 95, 130 130, 130 175 C 130 220, 150 250, 150 300 C 150 350, 120 380, 110 410 L 250 410 C 240 380, 210 350, 210 300 C 210 250, 230 220, 230 175 C 230 130, 210 95, 180 70 Z"
+              stroke="#C8A165" stroke-opacity="0.6" stroke-width="1.3"></path>
+            <line x1="180" y1="95" x2="180" y2="395" stroke="#C8A165" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="1 5"></line>
+            <text x="30" y="430" class="intro__visual-text">ATELIÊ — Nº 07</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Grid de Produtos ===== -->
+    <section class="products" id="produtos">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow reveal">Seleção da Semana</p>
+          <h2 class="reveal">Peças em Destaque</h2>
+        </div>
+
+        <div class="products__grid">
+
+          <article class="product-card reveal">
+            <div class="product-card__media">
+              <span class="product-card__look">Look 01</span>
+              <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M110 40 C 80 60, 60 90, 58 130 L 50 230 L 75 230 L 82 150 L 82 235 L 138 235 L 138 150 L 145 230 L 170 230 L 162 130 C 160 90, 140 60, 110 40 Z" stroke="#A0A0A0" stroke-width="1.2"></path>
+                <path d="M96 42 L 110 58 L 124 42" stroke="#A0A0A0" stroke-width="1.2"></path>
+              </svg>
+            </div>
+            <div class="product-card__body">
+              <h3>Sobretudo Longo Camel</h3>
+              <p class="product-card__price">R$ 2.480,00</p>
+              <button type="button" class="btn btn--outline btn--small">Adicionar à Sacola</button>
+            </div>
+          </article>
+
+          <article class="product-card reveal">
+            <div class="product-card__media">
+              <span class="product-card__look">Look 02</span>
+              <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M110 50 L 70 75 L 80 100 L 95 90 L 95 220 L 125 220 L 125 90 L 140 100 L 150 75 L 110 50 Z" stroke="#A0A0A0" stroke-width="1.2"></path>
+                <line x1="110" y1="100" x2="110" y2="215" stroke="#A0A0A0" stroke-width="1"></line>
+              </svg>
+            </div>
+            <div class="product-card__body">
+              <h3>Camisa de Seda Off-White</h3>
+              <p class="product-card__price">R$ 890,00</p>
+              <button type="button" class="btn btn--outline btn--small">Adicionar à Sacola</button>
+            </div>
+          </article>
+
+          <article class="product-card reveal">
+            <div class="product-card__media">
+              <span class="product-card__look">Look 03</span>
+              <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M85 60 L 135 60 L 140 110 L 150 230 L 122 230 L 112 120 L 108 120 L 98 230 L 70 230 L 80 110 Z" stroke="#A0A0A0" stroke-width="1.2"></path>
+                <line x1="85" y1="60" x2="135" y2="60" stroke="#A0A0A0" stroke-width="1"></line>
+              </svg>
+            </div>
+            <div class="product-card__body">
+              <h3>Calça Alfaiataria Preta</h3>
+              <p class="product-card__price">R$ 1.150,00</p>
+              <button type="button" class="btn btn--outline btn--small">Adicionar à Sacola</button>
+            </div>
+          </article>
+
+          <article class="product-card reveal">
+            <div class="product-card__media">
+              <span class="product-card__look">Look 04</span>
+              <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M110 45 C 78 62, 58 85, 55 120 L 45 210 L 70 210 L 78 135 L 78 215 L 142 215 L 142 135 L 150 210 L 175 210 L 165 120 C 162 85, 142 62, 110 45 Z" stroke="#A0A0A0" stroke-width="1.2"></path>
+                <line x1="110" y1="70" x2="110" y2="205" stroke="#A0A0A0" stroke-width="1" stroke-dasharray="1 4"></line>
+              </svg>
+            </div>
+            <div class="product-card__body">
+              <h3>Blazer Estruturado Grafite</h3>
+              <p class="product-card__price">R$ 1.980,00</p>
+              <button type="button" class="btn btn--outline btn--small">Adicionar à Sacola</button>
+            </div>
+          </article>
+
+          <article class="product-card reveal">
+            <div class="product-card__media">
+              <span class="product-card__look">Look 05</span>
+              <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M95 55 L 125 55 L 132 90 C 150 110, 158 150, 150 235 L 70 235 C 62 150, 70 110, 88 90 Z" stroke="#A0A0A0" stroke-width="1.2"></path>
+                <path d="M95 55 L 84 70 L 95 80" stroke="#A0A0A0" stroke-width="1"></path>
+                <path d="M125 55 L 136 70 L 125 80" stroke="#A0A0A0" stroke-width="1"></path>
+              </svg>
+            </div>
+            <div class="product-card__body">
+              <h3>Vestido Tubo Acetinado</h3>
+              <p class="product-card__price">R$ 1.620,00</p>
+              <button type="button" class="btn btn--outline btn--small">Adicionar à Sacola</button>
+            </div>
+          </article>
+
+          <article class="product-card reveal">
+            <div class="product-card__media">
+              <span class="product-card__look">Look 06</span>
+              <svg viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M110 55 C 85 70, 68 95, 66 125 L 60 200 L 80 200 L 86 140 L 86 205 L 134 205 L 134 140 L 140 200 L 160 200 L 154 125 C 152 95, 135 70, 110 55 Z" stroke="#A0A0A0" stroke-width="1.1"></path>
+                <path d="M75 130 L 145 130" stroke="#A0A0A0" stroke-width="0.8" stroke-dasharray="2 3"></path>
+              </svg>
+            </div>
+            <div class="product-card__body">
+              <h3>Suéter de Cashmere Areia</h3>
+              <p class="product-card__price">R$ 1.340,00</p>
+              <button type="button" class="btn btn--outline btn--small">Adicionar à Sacola</button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Por que escolher ===== -->
+    <section class="why" id="sobre">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow reveal">Por que ÁUREA</p>
+          <h2 class="reveal">Construída para durar mais que a estação.</h2>
+        </div>
+
+        <div class="why__grid">
+          <div class="why-card reveal">
+            <span class="why-card__mark" aria-hidden="true">M</span>
+            <h3>Matéria-prima rastreada</h3>
+            <p>Lã, algodão e seda com origem certificada — sabemos exatamente de qual fazenda
+              ou tear cada lote veio antes de chegar ao corte.</p>
+          </div>
+          <div class="why-card reveal">
+            <span class="why-card__mark" aria-hidden="true">L</span>
+            <h3>Lotes pequenos, numerados</h3>
+            <p>Nenhuma peça é produzida em escala. Cada unidade traz um número de série
+              costurado à mão na etiqueta interna.</p>
+          </div>
+          <div class="why-card reveal">
+            <span class="why-card__mark" aria-hidden="true">E</span>
+            <h3>Embalagem consciente</h3>
+            <p>Caixas de algodão reaproveitado, sem plástico e sem papel de seda — pensadas
+              para serem reutilizadas, não descartadas.</p>
+          </div>
+          <div class="why-card reveal">
+            <span class="why-card__mark" aria-hidden="true">R</span>
+            <h3>Reparo vitalício</h3>
+            <p>Qualquer peça ÁUREA pode voltar ao ateliê para conserto, sem custo, por quanto
+              tempo você a tiver.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Banner Promocional ===== -->
+    <section class="promo">
+      <div class="container promo__inner">
+        <p class="eyebrow eyebrow--light reveal">Tiragem Limitada</p>
+        <h2 class="reveal">Apenas 200 peças desta edição<br>serão produzidas.</h2>
+        <p class="reveal">Cada unidade é numerada e acompanhada de certificado de autenticidade do ateliê.</p>
+        <a href="#newsletter" class="btn btn--ghost reveal">
+          <span>Garantir minha peça</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== Depoimentos ===== -->
+    <section class="testimonials" id="depoimentos">
+      <div class="container">
+        <p class="eyebrow reveal">O Que Dizem</p>
+        <h2 class="reveal">Depoimentos</h2>
+
+        <div class="slider" id="slider">
+          <div class="slider__viewport">
+            <ul class="slider__track" id="sliderTrack">
+              <li class="slide">
+                <blockquote>
+                  Comprei o sobretudo da edição 04 e ele acompanhou três invernos sem perder
+                  forma. O acabamento interno é o tipo de detalhe que só se nota depois de usar.
+                </blockquote>
+                <cite>Mariana Costa — Designer de Interiores</cite>
+              </li>
+              <li class="slide">
+                <blockquote>
+                  O que me convenceu não foi a vitrine, foi a etiqueta. Saber o número da minha
+                  peça e quem cortou o tecido muda a relação que se tem com a roupa.
+                </blockquote>
+                <cite>Renato Albuquerque — Arquiteto</cite>
+              </li>
+              <li class="slide">
+                <blockquote>
+                  Recomendo para quem se cansou de comprar a mesma coisa em lojas diferentes.
+                  A alfaiataria aqui realmente respeita o caimento do corpo.
+                </blockquote>
+                <cite>Júlia Fernandes — Editora de Moda</cite>
+              </li>
+              <li class="slide">
+                <blockquote>
+                  Mandei uma calça para reparo depois de dois anos de uso e voltou como nova,
+                  sem custo nenhum. Isso conta mais do que qualquer campanha.
+                </blockquote>
+                <cite>Theo Martins — Fotógrafo</cite>
+              </li>
+            </ul>
+          </div>
+
+          <div class="slider__controls">
+            <button class="slider__btn" id="prevBtn" type="button" aria-label="Depoimento anterior">‹</button>
+            <div class="slider__dots" id="sliderDots" role="tablist" aria-label="Selecionar depoimento"></div>
+            <button class="slider__btn" id="nextBtn" type="button" aria-label="Próximo depoimento">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Newsletter ===== -->
+    <section class="newsletter" id="newsletter">
+      <div class="container newsletter__inner">
+        <p class="eyebrow reveal">Lista de Espera</p>
+        <h2 class="reveal">Receba a próxima edição em primeira mão.</h2>
+        <p class="reveal">Sem spam. Apenas um aviso, no dia do lançamento, antes que a tiragem esgote.</p>
+
+        <form class="newsletter__form reveal" id="newsletterForm" novalidate>
+          <label for="newsletterEmail" class="sr-only">Seu e-mail</label>
+          <input type="email" id="newsletterEmail" name="email" placeholder="seu@email.com" autocomplete="email" required>
+          <button type="submit">Inscrever-se</button>
+        </form>
+        <p class="newsletter__feedback" id="newsletterFeedback" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Rodapé ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <p class="footer__logo">ÁUREA</p>
+        <p class="footer__statement">Alfaiataria contemporânea, cortada e costurada em
+          ateliê próprio desde 2018. Edições pequenas, numeradas, sem reposição.</p>
+      </div>
+
+      <div class="footer__col">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="#colecao">Coleção</a></li>
+          <li><a href="#produtos">Peças</a></li>
+          <li><a href="#sobre">Sobre o ateliê</a></li>
+          <li><a href="#depoimentos">Depoimentos</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Atendimento</h4>
+        <ul>
+          <li><a href="mailto:contato@aurea.com.br">contato@aurea.com.br</a></li>
+          <li><a href="#">Trocas e devoluções</a></li>
+          <li><a href="#">Guia de medidas</a></li>
+          <li><a href="#">Reparo vitalício</a></li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h4>Redes</h4>
+        <ul>
+          <li><a href="#" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="#" target="_blank" rel="noopener">Pinterest</a></li>
+          <li><a href="#" target="_blank" rel="noopener">TikTok</a></li>
+        </ul>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="footer__bottom container">
+      <p>© 2026 ÁUREA Ateliê. Todos os direitos reservados.</p>
+      <div class="footer__legal">
+        <a href="#">Política de Privacidade</a>
+        <a href="#">Termos de Uso</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
