@@ -1,329 +1,334 @@
-/* =========================================================================
-   ÁUREA — script.js
-   JavaScript puro, sem dependências. Organizado em módulos independentes,
-   cada um inicializado em DOMContentLoaded.
-   ========================================================================= */
 
 (function () {
   'use strict';
 
-  /* Preferência do usuário por movimento reduzido — respeitada em todo o JS */
-  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* -----------------------------------------------------------------
-     Utilitário: throttle via requestAnimationFrame
-     Evita disparar lógica pesada em todo evento de scroll/resize.
-     ----------------------------------------------------------------- */
-  function rafThrottle(callback) {
-    var ticking = false;
+  function raf(fn) {
+    var locked = false;
     return function () {
-      if (!ticking) {
-        window.requestAnimationFrame(function () {
-          callback();
-          ticking = false;
-        });
-        ticking = true;
-      }
+      if (locked) return;
+      locked = true;
+      var a = arguments, t = this;
+      requestAnimationFrame(function () { fn.apply(t, a); locked = false; });
     };
   }
 
-  /* =====================================================================
-     MÓDULO: Navbar — estado "glass" ao rolar
-     ===================================================================== */
-  function initNavbar() {
-    var navbar = document.getElementById('navbar');
-    if (!navbar) return;
-
-    function updateNavbarState() {
-      navbar.classList.toggle('is-scrolled', window.scrollY > 24);
+  (function () {
+    var toggle = document.getElementById('themeToggle');
+    var html = document.documentElement;
+    function set(light) {
+      html.classList.toggle('light', light);
+      toggle.checked = light;
+      localStorage.setItem('aurea-theme', light ? 'light' : 'dark');
     }
+    var saved = localStorage.getItem('aurea-theme');
+    if (saved) set(saved === 'light');
+    toggle.addEventListener('change', function () { set(toggle.checked); });
+  })();
 
-    updateNavbarState();
-    window.addEventListener('scroll', rafThrottle(updateNavbarState), { passive: true });
-  }
-
-  /* =====================================================================
-     MÓDULO: Menu mobile (hambúrguer animado + painel deslizante)
-     ===================================================================== */
-  function initMobileMenu() {
-    var burgerBtn = document.getElementById('burgerBtn');
+  (function () {
+    var nav = document.getElementById('navbar');
+    var burger = document.getElementById('navToggle');
     var panel = document.getElementById('mobilePanel');
     var overlay = document.getElementById('mobileOverlay');
-    if (!burgerBtn || !panel || !overlay) return;
 
-    function openMenu() {
-      panel.classList.add('is-active');
-      overlay.classList.add('is-active');
-      burgerBtn.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('nav-open');
-    }
-
-    function closeMenu() {
-      panel.classList.remove('is-active');
-      overlay.classList.remove('is-active');
-      burgerBtn.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('nav-open');
-    }
+    window.addEventListener('scroll', raf(function () {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }), { passive: true });
 
     function toggleMenu() {
-      var isOpen = burgerBtn.getAttribute('aria-expanded') === 'true';
-      isOpen ? closeMenu() : openMenu();
+      var open = panel.classList.toggle('active');
+      overlay.classList.toggle('active', open);
+      burger.setAttribute('aria-expanded', open);
+      document.body.classList.toggle('menu-open', open);
+    }
+    burger.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+    panel.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', toggleMenu); });
+  })();
+
+  (function () {
+    var cart = [];
+
+    var cartBtn       = document.getElementById('cartBtn');
+    var cartOverlay   = document.getElementById('cartOverlay');
+    var cartDrawer    = document.getElementById('cartDrawer');
+    var closeCart     = document.getElementById('closeCart');
+    var continueShopping = document.getElementById('continueShopping');
+    var cartBody      = document.getElementById('cartBody');
+    var cartTotalEl   = document.getElementById('cartTotal');
+    var cartBadge     = document.getElementById('cartBadge');
+    var checkoutBtn   = document.getElementById('checkoutBtn');
+    var toast         = document.getElementById('toast');
+    var toastMsg      = document.getElementById('toastMsg');
+
+    var sizeOverlay   = document.getElementById('sizeOverlay');
+    var sizeSheet     = document.getElementById('sizeSheet');
+    var sizeProductEl = document.getElementById('sizeProductName');
+    var sizeOpts      = document.querySelectorAll('.size-opt');
+    var cancelSize    = document.getElementById('cancelSize');
+    var confirmSize   = document.getElementById('confirmSize');
+
+    var pendingProduct = null;
+    var chosenSize = null;
+    var toastTimer = null;
+
+    function openCart() {
+      cartDrawer.classList.add('active');
+      cartOverlay.classList.add('active');
+      document.body.classList.add('menu-open');
+    }
+    function closeCartFn() {
+      cartDrawer.classList.remove('active');
+      cartOverlay.classList.remove('active');
+      document.body.classList.remove('menu-open');
     }
 
-    burgerBtn.addEventListener('click', toggleMenu);
-    overlay.addEventListener('click', closeMenu);
-
-    /* Fecha o menu ao clicar em qualquer link interno do painel */
-    panel.querySelectorAll('a').forEach(function (link) {
-      link.addEventListener('click', closeMenu);
-    });
-
-    /* Fecha com a tecla Esc, por acessibilidade */
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') closeMenu();
-    });
-  }
-
-  /* =====================================================================
-     MÓDULO: Reveal on scroll — fade-in com stagger via IntersectionObserver
-     ===================================================================== */
-  function initRevealAnimations() {
-    var revealEls = document.querySelectorAll('.reveal');
-    if (!revealEls.length) return;
-
-    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-      revealEls.forEach(function (el) { el.classList.add('is-visible'); });
-      return;
+    function showToast(msg) {
+      toastMsg.textContent = msg || 'Item adicionado à sacola';
+      toast.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove('visible'); }, 2800);
     }
 
-    /* Agrupa elementos por seção-pai para calcular o atraso em sequência
-       (efeito "stagger") apenas entre irmãos próximos, sem acumular delay
-       infinito ao longo da página inteira. */
-    var groupCounters = new WeakMap();
-
-    var observer = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-
-        var el = entry.target;
-        var parent = el.parentElement;
-        var index = groupCounters.get(parent) || 0;
-
-        el.style.setProperty('--reveal-delay', Math.min(index * 90, 360) + 'ms');
-        el.classList.add('is-visible');
-
-        groupCounters.set(parent, index + 1);
-        obs.unobserve(el);
-      });
-    }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -60px 0px'
-    });
-
-    revealEls.forEach(function (el) { observer.observe(el); });
-  }
-
-  /* =====================================================================
-     MÓDULO: Parallax do Hero (mouse + scroll, suave)
-     ===================================================================== */
-  function initHeroParallax() {
-    if (prefersReducedMotion) return;
-
-    var hero = document.querySelector('.hero');
-    var heroBg = document.querySelector('.hero__bg');
-    var artLayers = document.querySelectorAll('.hero__layer');
-    if (!hero) return;
-
-    var pointerX = 0;
-    var pointerY = 0;
-
-    /* Parallax sutil ao mover o mouse sobre o hero */
-    hero.addEventListener('mousemove', function (event) {
-      var rect = hero.getBoundingClientRect();
-      pointerX = (event.clientX - rect.left) / rect.width - 0.5;
-      pointerY = (event.clientY - rect.top) / rect.height - 0.5;
-
-      artLayers.forEach(function (layer) {
-        var depth = parseFloat(layer.getAttribute('data-depth')) || 0.03;
-        var moveX = pointerX * depth * 300;
-        var moveY = pointerY * depth * 300;
-        layer.style.transform = 'translate(' + moveX.toFixed(1) + 'px, ' + moveY.toFixed(1) + 'px)';
-      });
-    });
-
-    hero.addEventListener('mouseleave', function () {
-      artLayers.forEach(function (layer) {
-        layer.style.transform = 'translate(0, 0)';
-      });
-    });
-
-    /* Parallax leve do fundo conforme o usuário rola a página */
-    function updateScrollParallax() {
-      var offset = window.scrollY;
-      if (offset > window.innerHeight) return;
-      if (heroBg) heroBg.style.transform = 'translateY(' + (offset * 0.18).toFixed(1) + 'px)';
+    function fmtPrice(n) {
+      return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    window.addEventListener('scroll', rafThrottle(updateScrollParallax), { passive: true });
-  }
+    function renderCart() {
+      var total = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
+      var count = cart.reduce(function (s, i) { return s + i.qty; }, 0);
 
-  /* =====================================================================
-     MÓDULO: Fio de progresso (elemento de assinatura, tema alfaiataria)
-     Preenche conforme o avanço de leitura da página.
-     ===================================================================== */
-  function initProgressThread() {
-    var fill = document.getElementById('threadFill');
-    var pctLabel = document.getElementById('threadPct');
-    if (!fill || !pctLabel) return;
+      cartBadge.textContent = count;
+      cartBadge.classList.toggle('visible', count > 0);
+      cartTotalEl.textContent = fmtPrice(total);
 
-    function updateProgress() {
-      var scrollTop = window.scrollY;
-      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      var progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
-
-      fill.style.height = (progress * 100).toFixed(1) + '%';
-      pctLabel.textContent = String(Math.round(progress * 100)).padStart(2, '0');
-    }
-
-    updateProgress();
-    window.addEventListener('scroll', rafThrottle(updateProgress), { passive: true });
-    window.addEventListener('resize', rafThrottle(updateProgress));
-  }
-
-  /* =====================================================================
-     MÓDULO: Slider de depoimentos
-     Controles por botão, navegação por dots, swipe em touch e autoplay
-     (pausado ao interagir ou passar o mouse).
-     ===================================================================== */
-  function initTestimonialSlider() {
-    var slider = document.getElementById('slider');
-    var track = document.getElementById('sliderTrack');
-    var dotsContainer = document.getElementById('sliderDots');
-    var prevBtn = document.getElementById('prevBtn');
-    var nextBtn = document.getElementById('nextBtn');
-    if (!slider || !track || !dotsContainer) return;
-
-    var slides = Array.prototype.slice.call(track.children);
-    var currentIndex = 0;
-    var autoplayId = null;
-    var autoplayDelay = 6500;
-
-    /* Cria os indicadores (dots) dinamicamente, um por depoimento */
-    slides.forEach(function (_, i) {
-      var dot = document.createElement('button');
-      dot.type = 'button';
-      dot.setAttribute('role', 'tab');
-      dot.setAttribute('aria-label', 'Ir para depoimento ' + (i + 1));
-      dot.addEventListener('click', function () { goToSlide(i); });
-      dotsContainer.appendChild(dot);
-    });
-    var dots = Array.prototype.slice.call(dotsContainer.children);
-
-    function render() {
-      track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
-      dots.forEach(function (dot, i) {
-        dot.classList.toggle('is-active', i === currentIndex);
-        dot.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
-      });
-    }
-
-    function goToSlide(index) {
-      currentIndex = (index + slides.length) % slides.length;
-      render();
-    }
-
-    function nextSlide() { goToSlide(currentIndex + 1); }
-    function prevSlide() { goToSlide(currentIndex - 1); }
-
-    function startAutoplay() {
-      if (prefersReducedMotion) return;
-      stopAutoplay();
-      autoplayId = window.setInterval(nextSlide, autoplayDelay);
-    }
-
-    function stopAutoplay() {
-      if (autoplayId) {
-        window.clearInterval(autoplayId);
-        autoplayId = null;
-      }
-    }
-
-    if (nextBtn) nextBtn.addEventListener('click', function () { nextSlide(); startAutoplay(); });
-    if (prevBtn) prevBtn.addEventListener('click', function () { prevSlide(); startAutoplay(); });
-
-    slider.addEventListener('mouseenter', stopAutoplay);
-    slider.addEventListener('mouseleave', startAutoplay);
-
-    /* Suporte a swipe em telas touch */
-    var touchStartX = 0;
-    var touchEndX = 0;
-
-    track.addEventListener('touchstart', function (event) {
-      touchStartX = event.touches[0].clientX;
-      stopAutoplay();
-    }, { passive: true });
-
-    track.addEventListener('touchend', function (event) {
-      touchEndX = event.changedTouches[0].clientX;
-      var delta = touchStartX - touchEndX;
-      if (Math.abs(delta) > 40) {
-        delta > 0 ? nextSlide() : prevSlide();
-      }
-      startAutoplay();
-    }, { passive: true });
-
-    render();
-    startAutoplay();
-  }
-
-  /* =====================================================================
-     MÓDULO: Formulário de Newsletter
-     Validação simples no cliente + mensagem de retorno acessível.
-     ===================================================================== */
-  function initNewsletterForm() {
-    var form = document.getElementById('newsletterForm');
-    var input = document.getElementById('newsletterEmail');
-    var feedback = document.getElementById('newsletterFeedback');
-    if (!form || !input || !feedback) return;
-
-    function showFeedback(message, type) {
-      feedback.textContent = message;
-      feedback.classList.remove('is-success', 'is-error');
-      feedback.classList.add('is-visible', type === 'success' ? 'is-success' : 'is-error');
-    }
-
-    function isValidEmail(value) {
-      /* Validação pragmática de e-mail, suficiente para o front-end */
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    }
-
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-      var value = input.value.trim();
-
-      if (!isValidEmail(value)) {
-        showFeedback('Verifique o e-mail informado antes de continuar.', 'error');
-        input.focus();
+      if (cart.length === 0) {
+        cartBody.innerHTML =
+          '<div class="cart-empty">' +
+          '<svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>' +
+          '<p>Sua sacola está vazia.</p></div>';
+        checkoutBtn.disabled = true;
         return;
       }
 
-      /* Aqui entraria a chamada real a um serviço de e-mail marketing. */
-      showFeedback('Inscrição confirmada. Em breve você recebe novidades da Edição 07.', 'success');
+      checkoutBtn.disabled = false;
+      cartBody.innerHTML = '';
+      cart.forEach(function (item, idx) {
+        var el = document.createElement('div');
+        el.className = 'cart-item';
+        el.innerHTML =
+          '<div>' +
+            '<p class="cart-item__name">' + item.name + '</p>' +
+            '<p class="cart-item__meta">Tamanho ' + item.size + '</p>' +
+            '<p class="cart-item__price">' + fmtPrice(item.price * item.qty) + '</p>' +
+            '<div class="qty-row">' +
+              '<button class="qty-btn" data-idx="' + idx + '" data-act="minus" aria-label="Diminuir">&#8722;</button>' +
+              '<span class="qty-value">' + item.qty + '</span>' +
+              '<button class="qty-btn" data-idx="' + idx + '" data-act="plus" aria-label="Aumentar">&#43;</button>' +
+            '</div>' +
+          '</div>' +
+          '<button class="cart-item__remove" data-idx="' + idx + '" aria-label="Remover item">&#215;</button>';
+        cartBody.appendChild(el);
+      });
+    }
+
+    cartBody.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-idx]');
+      if (!btn) return;
+      var idx = parseInt(btn.dataset.idx);
+      var act = btn.dataset.act;
+      if (act === 'plus') { cart[idx].qty++; }
+      else if (act === 'minus') {
+        cart[idx].qty--;
+        if (cart[idx].qty <= 0) cart.splice(idx, 1);
+      } else if (btn.classList.contains('cart-item__remove')) {
+        cart.splice(idx, 1);
+      }
+      renderCart();
+    });
+
+    cartBtn.addEventListener('click', function () { renderCart(); openCart(); });
+    cartOverlay.addEventListener('click', closeCartFn);
+    closeCart.addEventListener('click', closeCartFn);
+    continueShopping.addEventListener('click', closeCartFn);
+
+    function openSize(product) {
+      pendingProduct = product;
+      chosenSize = null;
+      sizeProductEl.textContent = product.name;
+      sizeOpts.forEach(function (o) { o.classList.remove('selected'); });
+      sizeSheet.classList.add('active');
+      sizeOverlay.classList.add('active');
+    }
+    function closeSize() {
+      sizeSheet.classList.remove('active');
+      sizeOverlay.classList.remove('active');
+      pendingProduct = null;
+    }
+
+    sizeOpts.forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        sizeOpts.forEach(function (o) { o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        chosenSize = opt.dataset.size;
+      });
+    });
+
+    confirmSize.addEventListener('click', function () {
+      if (!chosenSize) {
+        sizeOpts[0].focus();
+        return;
+      }
+      var existing = cart.find(function (i) {
+        return i.name === pendingProduct.name && i.size === chosenSize;
+      });
+      if (existing) { existing.qty++; }
+      else { cart.push({ name: pendingProduct.name, price: pendingProduct.price, size: chosenSize, qty: 1 }); }
+      closeSize();
+      renderCart();
+      showToast(pendingProduct.name + ' (tam. ' + chosenSize + ') adicionado');
+    });
+
+    cancelSize.addEventListener('click', closeSize);
+    sizeOverlay.addEventListener('click', closeSize);
+
+    document.querySelectorAll('.add-to-cart').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openSize({ name: btn.dataset.name, price: parseFloat(btn.dataset.price) });
+      });
+    });
+
+    checkoutBtn.addEventListener('click', function () {
+      var span = checkoutBtn.querySelector('span');
+      span.textContent = 'Processando…';
+      checkoutBtn.disabled = true;
+      setTimeout(function () {
+        checkoutBtn.classList.add('btn-checkout-success');
+        span.textContent = 'Pedido Confirmado ✓';
+        setTimeout(function () {
+          cart = [];
+          renderCart();
+          closeCartFn();
+          checkoutBtn.classList.remove('btn-checkout-success');
+          span.textContent = 'Finalizar Pedido';
+          showToast('Pedido realizado com sucesso!');
+        }, 2000);
+      }, 1400);
+    });
+
+    renderCart();
+  })();
+
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length || reduced) {
+      els.forEach(function (e) { e.classList.add('visible'); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) en.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    els.forEach(function (el) { obs.observe(el); });
+  })();
+
+  (function () {
+    var bg = document.getElementById('heroBg');
+    if (!bg || reduced) return;
+    window.addEventListener('scroll', raf(function () {
+      if (window.scrollY < window.innerHeight) {
+        bg.style.transform = 'translateY(' + (window.scrollY * 0.16).toFixed(1) + 'px)';
+      }
+    }), { passive: true });
+  })();
+
+  (function () {
+    var fill = document.getElementById('threadFill');
+    var pct  = document.getElementById('threadPct');
+    if (!fill) return;
+    function update() {
+      var p = Math.min(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight), 1);
+      fill.style.height = (p * 100).toFixed(1) + '%';
+      pct.textContent = String(Math.round(p * 100)).padStart(2, '0');
+    }
+    update();
+    window.addEventListener('scroll', raf(update), { passive: true });
+    window.addEventListener('resize', raf(update));
+  })();
+
+  (function () {
+    var track = document.getElementById('sliderTrack');
+    var dotsC = document.getElementById('sliderDots');
+    var prev  = document.getElementById('prevBtn');
+    var next  = document.getElementById('nextBtn');
+    if (!track) return;
+
+    var slides = Array.from(track.children);
+    var cur = 0;
+    var timer = null;
+    var DELAY = 6000;
+
+    slides.forEach(function (_, i) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.setAttribute('aria-label', 'Depoimento ' + (i + 1));
+      d.addEventListener('click', function () { go(i); restart(); });
+      dotsC.appendChild(d);
+    });
+
+    var dots = Array.from(dotsC.children);
+
+    function render() {
+      track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+      dots.forEach(function (d, i) { d.classList.toggle('active', i === cur); });
+    }
+
+    function go(i) { cur = ((i % slides.length) + slides.length) % slides.length; render(); }
+    function restart() {
+      clearInterval(timer);
+      if (!reduced) timer = setInterval(function () { go(cur + 1); }, DELAY);
+    }
+
+    prev.addEventListener('click', function () { go(cur - 1); restart(); });
+    next.addEventListener('click', function () { go(cur + 1); restart(); });
+
+    var tx = 0;
+    track.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; clearInterval(timer); }, { passive: true });
+    track.addEventListener('touchend', function (e) {
+      var d = tx - e.changedTouches[0].clientX;
+      if (Math.abs(d) > 44) go(d > 0 ? cur + 1 : cur - 1);
+      restart();
+    }, { passive: true });
+
+    document.getElementById('slider').addEventListener('mouseenter', function () { clearInterval(timer); });
+    document.getElementById('slider').addEventListener('mouseleave', restart);
+
+    render();
+    restart();
+  })();
+
+  (function () {
+    var form  = document.getElementById('newsletterForm');
+    var input = document.getElementById('newsletterEmail');
+    var msg   = document.getElementById('newsletterMsg');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = input.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+        msg.textContent = 'Por favor, informe um e-mail válido.';
+        msg.className = 'newsletter__msg visible error';
+        input.focus();
+        return;
+      }
+      msg.textContent = 'Inscrição confirmada! Em breve você recebe novidades da Edição 07.';
+      msg.className = 'newsletter__msg visible success';
       form.reset();
     });
-  }
-
-  /* =====================================================================
-     INICIALIZAÇÃO
-     ===================================================================== */
-  document.addEventListener('DOMContentLoaded', function () {
-    initNavbar();
-    initMobileMenu();
-    initRevealAnimations();
-    initHeroParallax();
-    initProgressThread();
-    initTestimonialSlider();
-    initNewsletterForm();
-  });
+  })();
 
 })();
